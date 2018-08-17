@@ -11,7 +11,10 @@ public class BaseManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+		for(int i=0; i<m_Managers.Length; i++)
+        {
+            Instantiate(m_Managers[i]);
+        }
 	}
 	
 	// Update is called once per frame
