@@ -11,8 +11,6 @@ public class Avatar : MonoBehaviour {
     internal Move m_MoveState;
 
     private Vector3 m_Target;
-    private float m_WalkSpeed = 3f;
-    private float m_RunSpeed = 6f;
 
     private Vector3 m_CameraPosition;
     private float m_TurnSpeed = 2.5f;
@@ -60,15 +58,15 @@ public class Avatar : MonoBehaviour {
 
     public void ReachedTarget()
     {
-        if((transform.position - m_Target).sqrMagnitude < 9f)
+        if((transform.position - m_Target).sqrMagnitude < 4f)
         {
             SetState(m_IdleState);
         }
     }
 
-    public void SetAnimation(int animIndex)
+    public void SetAnimation(QuerySDMecanimController.QueryChanSDAnimationType anim)
     {
-
+        m_MecanimController.ChangeAnimation(anim, true);
     }
 
 }

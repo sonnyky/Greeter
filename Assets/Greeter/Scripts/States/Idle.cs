@@ -19,6 +19,7 @@ public class Idle : StateManager<Avatar> {
     public override void OnStateEnter()
     {
         base.OnStateEnter();
+        targetObject.SetAnimation(QuerySDMecanimController.QueryChanSDAnimationType.NORMAL_IDLE);
     }
 
     public override void OnStateExit()
