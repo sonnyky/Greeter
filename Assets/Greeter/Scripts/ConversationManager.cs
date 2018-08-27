@@ -12,18 +12,35 @@ public class ConversationManager : MonoBehaviour {
 
     public ChatData[] m_Endpoints;
 
+    private ChatData m_Chat;
+    private TMPro.TextMeshProUGUI m_UserInput;
+    private TMPro.TextMeshProUGUI m_AvatarInput;
+
+    private GameObject m_ConversationCanvas;
+
     // Use this for initialization
     void Start() {
-        ChatData testData = new ChatData();
-        testData.endPoint = m_Endpoints[0].endPoint;
-        testData.apiKey = m_Endpoints[0].apiKey;
-        testData.message = "誰ですか？";
-        SendMessage(testData);
+        m_Chat = new ChatData();
+        m_Chat.endPoint = m_Endpoints[0].endPoint;
+        m_Chat.apiKey = m_Endpoints[0].apiKey;
+
+        m_ConversationCanvas = GameObject.FindGameObjectWithTag("ConversationCanvas").gameObject;
+        m_UserInput = m_ConversationCanvas.transform.Find("UserInput").transform.Find("Text Area").transform.Find("Text").gameObject.GetComponent<TMPro.TextMeshProUGUI>();
+        m_AvatarInput = m_ConversationCanvas.transform.Find("AvatarResponse").GetComponent<TMPro.TextMeshProUGUI>();
     }
 
-    // Update is called once per frame
-    void Update() {
+   public void GetUserInput()
+    {
+        m_Chat.message = m_UserInput.text;
+        SendMessage(m_Chat);
+    }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            GetUserInput();
+        }
     }
 
     public void SendMessage(ChatData data)
@@ -61,6 +78,7 @@ public class ConversationManager : MonoBehaviour {
                     //    text.text = jsnode["results"][0]["reply"].Get<string>();
                     //}
                     Debug.Log(jsnode["results"][0]["reply"].Get<string>());
+                    m_AvatarInput.text = jsnode["results"][0]["reply"].Get<string>();
                 }
                 catch (Exception e)
                 {
