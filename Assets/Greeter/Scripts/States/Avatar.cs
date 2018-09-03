@@ -34,7 +34,10 @@ public class Avatar : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        m_CurrentState.Tick();
+        if (m_CurrentState != null)
+        {
+            m_CurrentState.Tick();
+        }
 	}
 
     public void FaceTargetPosition()

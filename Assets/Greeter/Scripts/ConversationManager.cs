@@ -27,6 +27,15 @@ public class ConversationManager : MonoBehaviour {
         m_ConversationCanvas = GameObject.FindGameObjectWithTag("ConversationCanvas").gameObject;
         m_UserInput = m_ConversationCanvas.transform.Find("UserInput").transform.Find("Text Area").transform.Find("Text").gameObject.GetComponent<TMPro.TextMeshProUGUI>();
         m_AvatarInput = m_ConversationCanvas.transform.Find("AvatarResponse").GetComponent<TMPro.TextMeshProUGUI>();
+
+        //WindowsVoice.speak("日本語で話します");
+    }
+
+    public void SetUserInputFromVoice(string input)
+    {
+        m_UserInput.text = input;
+        m_Chat.message = input;
+        SendMessage(m_Chat);
     }
 
    public void GetUserInput()
@@ -79,6 +88,7 @@ public class ConversationManager : MonoBehaviour {
                     //}
                     Debug.Log(jsnode["results"][0]["reply"].Get<string>());
                     m_AvatarInput.text = jsnode["results"][0]["reply"].Get<string>();
+                    WindowsVoice.speak(jsnode["results"][0]["reply"].Get<string>());
                 }
                 catch (Exception e)
                 {
