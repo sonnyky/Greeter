@@ -28,7 +28,7 @@ public class ConversationManager : MonoBehaviour {
         m_UserInput = m_ConversationCanvas.transform.Find("UserInput").transform.Find("Text Area").transform.Find("Text").gameObject.GetComponent<TMPro.TextMeshProUGUI>();
         m_AvatarInput = m_ConversationCanvas.transform.Find("AvatarResponse").GetComponent<TMPro.TextMeshProUGUI>();
 
-        //WindowsVoice.speak("日本語で話します");
+        WindowsVoice.speak("リトルプラネットへようこそ");
     }
 
     public void SetUserInputFromVoice(string input)
