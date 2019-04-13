@@ -447,7 +447,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5199\u771F\u3092\u64AE\u308B"
+  m_Text: "\u30AD\u30E3\u30D7\u30C1\u30E3"
 --- !u!222 &964225785
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -469,8 +469,8 @@ GameObject:
   - component: {fileID: 1220144370}
   - component: {fileID: 1220144369}
   m_Layer: 5
-  m_Name: Register
-  m_TagString: Untagged
+  m_Name: Capture
+  m_TagString: RegistrationButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
