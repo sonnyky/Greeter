@@ -27,6 +27,8 @@ public class AzureManager : MonoBehaviour
     {
         m_ApiKey = EnvironmentVariables.GetVariable("GREETER_AZURE_FACE_API_KEY");
         Debug.Log("Endpoint is : " + m_Endpoint);
+
+        StartCoroutine(Validation());
     }
 
    IEnumerator Validation()
@@ -40,6 +42,8 @@ public class AzureManager : MonoBehaviour
         // Check if the person group ID already exists
         bool requestSucceded = false;
         yield return RequestManager.GetPersonGroup(m_Endpoint, m_ApiKey, m_PersonGroup, value => requestSucceded = value);
+
+        Debug.Log("PersonGroup Exists : " + requestSucceded);
 
     }
 
