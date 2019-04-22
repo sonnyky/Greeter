@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Greeter/Scenes/Forest.unity
-    guid: 905ccc18e9d80ec4f95881b916840861
+    path: Assets/Greeter/Scenes/UserDetection.unity
+    guid: aed52b275db9fe84095a21c9f8034901
+  - enabled: 1
+    path: Assets/Greeter/Scenes/UserRegistration.unity
+    guid: 5ee513bd892974345a1e70a6a55c13c9
   m_configObjects: {}

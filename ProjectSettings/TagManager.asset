@@ -7,8 +7,10 @@ TagManager:
   - ConversationCanvas
   - WebcamScreen
   - DetectionButton
-  - RegistrationButton
   - Status
+  - PersonGroup
+  - RegistrationButton
+  - CameraManager
   layers:
   - Default
   - TransparentFX
