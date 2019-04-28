@@ -24,7 +24,6 @@ public class AzureManager : MonoBehaviour
     bool m_PersonGroupExists = false;
     bool m_PersonGroupNotEmpty = false;
     bool m_PersonGroupTrained = false;
-    bool m_Validated = false;
 
     // List of persons contained in the PersonGroup. This list will be used to detect if there are any known person in the target image.
     List<PersonInGroup.Person> persons;
@@ -111,34 +110,25 @@ public class AzureManager : MonoBehaviour
         // ここまで来たらグループには一人以上が定義されている。あとはトレーニングされているかどうかのチェック。
         if (m_PersonGroupTrained)
         {
-            // Try to detect face in test image
-            string[] testImageFiles = Directory.GetFiles(m_WebcamManager.GetRuntimeImagePath(), "*.jpg");
-
-            for (int i = 0; i < testImageFiles.Length; i++)
-            {
-                Debug.Log(testImageFiles[i]);
-                // Detect faces in the test image
-                string detectFaces = "unknown";
-                yield return RequestManager.DetectFaces(m_Endpoint, m_ApiKey, testImageFiles[i], value => detectFaces = value);
-                Debug.Log("Response from DetectFaces : " + detectFaces);
-                FacesBasic.FacesDetectionResponse[] face = JsonHelper.getJsonArray<FacesBasic.FacesDetectionResponse>(detectFaces);
-
-                // Identify faces in the test image
-                string identifyFaces = "unknown";
-                yield return RequestManager.Identify(m_Endpoint, m_ApiKey, m_PersonGroup, face, value => identifyFaces = value);
-                Debug.Log("Response from IdentifyFaces : " + identifyFaces);
-
-                IdentifiedFaces.IdentifiedFacesResponse[] idFaces = JsonHelper.getJsonArray<IdentifiedFaces.IdentifiedFacesResponse>(identifyFaces);
-
-                // TODO : Compare with list of known people to see if any known person is present
-            }
+            StartCoroutine(Recognize());
         }
         else
         {
-            // TODO : train the persongroup
+            SetStatusText("PersonGroup には１人以上定義されているが、トレーニングされていない。");
+            string trainPersonGroupResult = "Unknown";
+            yield return RequestManager.TrainPersonGroup(m_Endpoint, m_ApiKey, m_PersonGroup, value => trainPersonGroupResult = value);
+            if (trainPersonGroupResult == "")
+            {
+                Debug.Log("Training success. Trying identification.");
+                StartCoroutine(Recognize());
+            }
         }
 
-        
+        if(!m_PersonGroupExists || !m_PersonGroupNotEmpty || !m_PersonGroupTrained)
+        {
+            Debug.LogError("Unknown error");
+            SetStatusText("顔検知の条件が揃えられなかった。再度お試しください。");
+        }
 
     }
 
@@ -175,6 +165,28 @@ public class AzureManager : MonoBehaviour
     {
         yield return m_DelayUntilRecognition;
         Debug.Log("Starting recognition process");
+
+        // Try to detect face in test image
+        string[] testImageFiles = Directory.GetFiles(m_WebcamManager.GetRuntimeImagePath(), "*.jpg");
+
+        for (int i = 0; i < testImageFiles.Length; i++)
+        {
+            Debug.Log(testImageFiles[i]);
+            // Detect faces in the test image
+            string detectFaces = "unknown";
+            yield return RequestManager.DetectFaces(m_Endpoint, m_ApiKey, testImageFiles[i], value => detectFaces = value);
+            Debug.Log("Response from DetectFaces : " + detectFaces);
+            FacesBasic.FacesDetectionResponse[] face = JsonHelper.getJsonArray<FacesBasic.FacesDetectionResponse>(detectFaces);
+
+            // Identify faces in the test image
+            string identifyFaces = "unknown";
+            yield return RequestManager.Identify(m_Endpoint, m_ApiKey, m_PersonGroup, face, value => identifyFaces = value);
+            Debug.Log("Response from IdentifyFaces : " + identifyFaces);
+
+            IdentifiedFaces.IdentifiedFacesResponse[] idFaces = JsonHelper.getJsonArray<IdentifiedFaces.IdentifiedFacesResponse>(identifyFaces);
+
+            // TODO : Compare with list of known people to see if any known person is present
+        }
     }
 
     IEnumerator GetPersonListInPersonGroup()
@@ -227,5 +239,10 @@ public class AzureManager : MonoBehaviour
     void Revalidate()
     {
         Validation();
+    }
+
+    public string GetActivePersonGroup()
+    {
+        return m_PersonGroup;
     }
 }

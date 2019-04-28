@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7048884777807546379}
   m_Layer: 0
   m_Name: AzureManager
-  m_TagString: Untagged
+  m_TagString: AzureManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,4 +44,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Endpoint: https://japaneast.api.cognitive.microsoft.com/face/v1.0
-  m_PersonGroup: Placeholder

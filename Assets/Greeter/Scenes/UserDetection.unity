@@ -967,7 +967,7 @@ GameObject:
   - component: {fileID: 1107768284}
   - component: {fileID: 1107768283}
   m_Layer: 5
-  m_Name: TextMeshPro Text
+  m_Name: PersonGroupInputTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

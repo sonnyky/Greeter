@@ -15,6 +15,16 @@ public class WebcamManager : MonoBehaviour
 
     string m_RuntimeImage;
 
+    // Delegate and Events to update photo counter
+    public delegate void PhotoCapture();
+    public static event PhotoCapture RegisterPhoto;
+
+    public void OnPhotoCapture()
+    {
+        RegisterPhoto();
+    }
+
+
     void Start()
     {
         devices = WebCamTexture.devices;
@@ -22,10 +32,10 @@ public class WebcamManager : MonoBehaviour
         rawimage = GameObject.FindGameObjectWithTag("WebcamScreen").GetComponent<RawImage>();
 
         m_CaptureButton = GameObject.Find("Capture").GetComponent<Button>();
-        m_CaptureButton.onClick.AddListener(()=> {
+        m_CaptureButton.onClick.AddListener(() => {
             TakeSnapshot();
         });
-      
+
         // Stream from the first camera device
         StreamCamera(devices[0].name);
 
@@ -35,32 +45,35 @@ public class WebcamManager : MonoBehaviour
     {
 
         string buttonTag = m_CaptureButton.gameObject.tag;
+        Texture2D snap = new Texture2D(_CamTex.width, _CamTex.height);
+
         switch (buttonTag)
         {
             case "DetectionButton":
-                Texture2D snap = new Texture2D(_CamTex.width, _CamTex.height);
+
                 snap.SetPixels(_CamTex.GetPixels());
                 snap.Apply();
                 m_RuntimeImage = Application.dataPath + Constants.PREFIX_DETECTION_IMAGES_PATH;
-                System.IO.File.WriteAllBytes(runtimeImage + "main.jpg", snap.EncodeToJPG());
+                System.IO.File.WriteAllBytes(m_RuntimeImage + "main.jpg", snap.EncodeToJPG());
                 Debug.Log("Capture button pressed during detection");
                 break;
+
             case "RegistrationButton":
                 
-                Texture2D snap = new Texture2D(_CamTex.width, _CamTex.height);
                 snap.SetPixels(_CamTex.GetPixels());
                 snap.Apply();
                 string newPersonFolder = Application.dataPath + Constants.PREFIX_TRAIN_IMAGES_PATH + Constants.PREFIX_TRAIN_IMAGE_NAME + _CaptureCounter.ToString();
                 Folders.Create(newPersonFolder);
-                System.IO.File.WriteAllBytes(newPersonFolder + "/" +  _CaptureCounter.ToString() + ".jpg", snap.EncodeToJPG());
+                System.IO.File.WriteAllBytes(newPersonFolder + "/" + _CaptureCounter.ToString() + ".jpg", snap.EncodeToJPG());
                 ++_CaptureCounter;
                 Debug.Log("Capture button pressed during registration");
-
+                
+                OnPhotoCapture();
                 break;
             default:
                 break;
         }
-        
+
     }
 
     public void StreamCamera(string cameraName)
@@ -82,5 +95,4 @@ public class WebcamManager : MonoBehaviour
     {
         return m_RuntimeImage;
     }
-
 }

@@ -11,6 +11,8 @@ TagManager:
   - PersonGroup
   - RegistrationButton
   - CameraManager
+  - GroupNameText
+  - AzureManager
   layers:
   - Default
   - TransparentFX
