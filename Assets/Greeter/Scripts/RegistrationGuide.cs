@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RegistrationGuide : MonoBehaviour
 {
@@ -13,6 +14,17 @@ public class RegistrationGuide : MonoBehaviour
     TMPro.TextMeshProUGUI m_StatusText;
     TMPro.TextMeshProUGUI m_GroupNameText;
 
+    // Find the button that will send the images to Azure for registration
+    private Button m_SendToAzureButton;
+
+    public delegate void RegisterToAzure();
+    public event RegisterToAzure Register;
+
+    public void OnSendToAzureButtonPressed()
+    {
+        Register();
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +32,7 @@ public class RegistrationGuide : MonoBehaviour
         WindowsVoice.speak("こんにちは。写真を登録してください。");
 
         m_WebcamManager = GameObject.FindGameObjectWithTag("CameraManager").GetComponent<WebcamManager>();
-        //m_AzureManager = GameObject.FindGameObjectWithTag("AzureManager").GetComponent<AzureManager>();
+        m_AzureManager = GameObject.FindGameObjectWithTag("AzureManager").GetComponent<AzureManager>();
 
         m_ActivePersonGroup = GetPersonGroupId();
 

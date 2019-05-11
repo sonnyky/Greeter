@@ -48,6 +48,7 @@ public class AzureManager : MonoBehaviour
 
         m_BaseManager = GameObject.Find("BaseManager").GetComponent<BaseManager>();
         m_StatusText = GameObject.FindGameObjectWithTag("Status").GetComponent<TMPro.TextMeshProUGUI>();
+        m_WebcamManager = GameObject.FindGameObjectWithTag("CameraManager").GetComponent<WebcamManager>();
 
         persons = new List<PersonInGroup.Person>();
     }
@@ -55,12 +56,10 @@ public class AzureManager : MonoBehaviour
     void GetPersonGroupInput()
     {
         m_PersonGroup = GameObject.FindGameObjectWithTag("PersonGroup").GetComponent<TMPro.TextMeshProUGUI>().text;
-        Debug.Log("PersonGroup is : " + m_PersonGroup);
-
         if (m_PersonGroup.Length <= 1)
         {
-            m_PersonGroup = "Placeholder";
-            Debug.Log("No PersonGroup specified. Setting to default : Placeholder");
+            m_PersonGroup = "placeholder";
+            Debug.Log("No PersonGroup specified. Setting to default (All small caps) : placeholder");
         }
     }
 
@@ -92,11 +91,13 @@ public class AzureManager : MonoBehaviour
             yield return StartCoroutine(CreatePersonGroup(m_PersonGroup));
         }
 
+        #region Get the list of Persons in the PersonGroup
         yield return StartCoroutine(GetPersonListInPersonGroup());
 
         // If PersonGroup has at least one person, check if it is trained.
         if (m_PersonGroupNotEmpty)
         {
+            SetStatusText("定義されているPerson があります。");
             yield return StartCoroutine(GetPersonGroupTrainedStatus());
         }
         else
@@ -104,9 +105,12 @@ public class AzureManager : MonoBehaviour
             SetStatusText("グループは空です。少なくとも一人を定義してください。5秒後に登録画面に遷移します。");
             // Go to registration scene and register at least one face
             StartCoroutine(GoToRegistration());
+            yield break;
         }
 
+        #endregion
 
+        #region PersonGroup exists (is defined) and has at least one Person defined. So we check the Training Status
         // ここまで来たらグループには一人以上が定義されている。あとはトレーニングされているかどうかのチェック。
         if (m_PersonGroupTrained)
         {
@@ -123,8 +127,9 @@ public class AzureManager : MonoBehaviour
                 StartCoroutine(Recognize());
             }
         }
+        #endregion
 
-        if(!m_PersonGroupExists || !m_PersonGroupNotEmpty || !m_PersonGroupTrained)
+        if (!m_PersonGroupExists || !m_PersonGroupNotEmpty || !m_PersonGroupTrained)
         {
             Debug.LogError("Unknown error");
             SetStatusText("顔検知の条件が揃えられなかった。再度お試しください。");
@@ -201,8 +206,13 @@ public class AzureManager : MonoBehaviour
             PersonInGroup.Person[] personList = JsonHelper.getJsonArray<PersonInGroup.Person>(personListRetrieved);
             if(personList.Length > 0)
             {
+                Debug.Log("Person list is NOT empty in PersonGroup");
                 m_PersonGroupNotEmpty = true;
                 persons.AddRange(personList);
+            }
+            else
+            {
+                Debug.Log("Person list is empty in PersonGroup");
             }
         }
 

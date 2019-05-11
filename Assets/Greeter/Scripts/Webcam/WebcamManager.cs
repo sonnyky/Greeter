@@ -31,6 +31,8 @@ public class WebcamManager : MonoBehaviour
 
         rawimage = GameObject.FindGameObjectWithTag("WebcamScreen").GetComponent<RawImage>();
 
+        m_RuntimeImage = Application.dataPath + "/Images/Runtime/";
+
         m_CaptureButton = GameObject.Find("Capture").GetComponent<Button>();
         m_CaptureButton.onClick.AddListener(() => {
             TakeSnapshot();

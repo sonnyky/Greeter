@@ -1023,8 +1023,8 @@ GameObject:
   - component: {fileID: 1032655531}
   - component: {fileID: 1032655530}
   m_Layer: 5
-  m_Name: Btn_RegisterToAzure
-  m_TagString: RegistrationButton
+  m_Name: SendToAzure
+  m_TagString: SendToAzureButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
