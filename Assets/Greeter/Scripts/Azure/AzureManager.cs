@@ -255,4 +255,22 @@ public class AzureManager : MonoBehaviour
     {
         return m_PersonGroup;
     }
+
+    /// <summary>
+    /// For other objects that need to call the Azure Face API such as the Registration Guide
+    /// </summary>
+    /// <returns></returns>
+    public string GetEndpoint()
+    {
+        return m_Endpoint;
+    }
+
+    /// <summary>
+    /// For other objects that need to call the Azure Face API such as the Registration Guide
+    /// </summary>
+    /// <returns></returns>
+    public string GetApiKey()
+    {
+        return m_ApiKey;
+    }
 }

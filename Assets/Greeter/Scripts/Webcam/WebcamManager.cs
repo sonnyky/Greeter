@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class WebcamManager : MonoBehaviour
@@ -9,11 +10,14 @@ public class WebcamManager : MonoBehaviour
 
     WebCamTexture _CamTex;
 
-    int _CaptureCounter = 0;
+    int _RegisteredPeopleCounter = 0;
 
     private Button m_CaptureButton;
 
     string m_RuntimeImage;
+
+    // Variable to check if we have a personId
+    string personId = "null";
 
     // Delegate and Events to update photo counter
     public delegate void PhotoCapture();
@@ -43,6 +47,11 @@ public class WebcamManager : MonoBehaviour
 
     }
 
+    public void SetPersonId(string _personId)
+    {
+        personId = _personId;
+    }
+
     public void TakeSnapshot()
     {
 
@@ -61,16 +70,22 @@ public class WebcamManager : MonoBehaviour
                 break;
 
             case "RegistrationButton":
-                
-                snap.SetPixels(_CamTex.GetPixels());
-                snap.Apply();
-                string newPersonFolder = Application.dataPath + Constants.PREFIX_TRAIN_IMAGES_PATH + Constants.PREFIX_TRAIN_IMAGE_NAME + _CaptureCounter.ToString();
-                Folders.Create(newPersonFolder);
-                System.IO.File.WriteAllBytes(newPersonFolder + "/" + _CaptureCounter.ToString() + ".jpg", snap.EncodeToJPG());
-                ++_CaptureCounter;
-                Debug.Log("Capture button pressed during registration");
-                
-                OnPhotoCapture();
+
+                // Check that we have a valid personId
+                if (!personId.Equals("null"))
+                {
+                    snap.SetPixels(_CamTex.GetPixels());
+                    snap.Apply();
+                    string personFolder = Application.dataPath + Constants.PREFIX_TRAIN_IMAGES_PATH + Constants.PREFIX_TRAIN_IMAGE_NAME + _RegisteredPeopleCounter.ToString();
+                    if (!Directory.Exists(personFolder))
+                    {
+                        Folders.Create(personFolder);
+                    }
+                    File.WriteAllBytes(personFolder + "/" + _RegisteredPeopleCounter.ToString() + ".jpg", snap.EncodeToJPG());
+                    Debug.Log("Capture button pressed during registration");
+
+                    OnPhotoCapture();
+                }
                 break;
             default:
                 break;

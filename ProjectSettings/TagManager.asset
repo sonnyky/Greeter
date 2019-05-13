@@ -13,7 +13,10 @@ TagManager:
   - CameraManager
   - GroupNameText
   - AzureManager
-  - SendToAzureButton
+  - PersonName
+  - PersonBirthday
+  - CreatePersonButton
+  - AddFacesButton
   layers:
   - Default
   - TransparentFX
