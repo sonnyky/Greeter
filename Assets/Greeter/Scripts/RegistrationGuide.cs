@@ -9,6 +9,11 @@ public class RegistrationGuide : MonoBehaviour
 
     WebcamManager m_WebcamManager;
     AzureManager m_AzureManager;
+    BaseManager m_BaseManager;
+
+
+    string m_Endpoint;
+    string m_ApiKey;
 
     string m_ActivePersonGroup;
 
@@ -19,9 +24,11 @@ public class RegistrationGuide : MonoBehaviour
     private Button m_AddFacesButton;
 
     private Button m_CreatePersonButton;
+    private bool m_CreatePersonButtonClicked = false;
     private PersonCreateSuccess.PersonCreateSuccessResponse m_PersonCreateSuccessResponse;
     private string personId = "null";
 
+    WaitForSeconds m_SceneTransferDelay = new WaitForSeconds(5);
 
     // Start is called before the first frame update
     void Start()
@@ -30,22 +37,28 @@ public class RegistrationGuide : MonoBehaviour
 
         m_WebcamManager = GameObject.FindGameObjectWithTag("CameraManager").GetComponent<WebcamManager>();
         m_AzureManager = GameObject.FindGameObjectWithTag("AzureManager").GetComponent<AzureManager>();
+        m_BaseManager = GameObject.Find("BaseManager").GetComponent<BaseManager>();
+
 
         m_ActivePersonGroup = GetPersonGroupId();
 
         m_StatusText = GameObject.FindGameObjectWithTag("Status").GetComponent<TMPro.TextMeshProUGUI>();
         m_GroupNameText = GameObject.FindGameObjectWithTag("GroupNameText").GetComponent<TMPro.TextMeshProUGUI>();
 
+        m_Endpoint = m_AzureManager.GetEndpoint();
+        m_ApiKey = m_AzureManager.GetApiKey();
+
         m_CreatePersonButton = GameObject.FindGameObjectWithTag("CreatePersonButton").GetComponent<Button>();
         m_CreatePersonButton.onClick.AddListener(() => {
-
-            string name = GetCurrentPersonName();
-            string birthday = GetCurrentPersonBirthday();
-            if (!name.Equals("null") && !birthday.Equals("null"))
+            if (!m_CreatePersonButtonClicked)
             {
-                // TODO ! Must check first if the name and birthday are already registered. if yes, return that personId
-
-                StartCoroutine(CreatePersonInPersonGroup(m_ActivePersonGroup, name, birthday));
+                string name = GetCurrentPersonName();
+                string birthday = GetCurrentPersonBirthday();
+                if (!name.Equals("null") && !birthday.Equals("null"))
+                {
+                    StartCoroutine(CheckPersonIdExists(name, birthday));
+                    m_CreatePersonButtonClicked = true;
+                }
             }
         });
 
@@ -60,6 +73,33 @@ public class RegistrationGuide : MonoBehaviour
     void InitializeDisplay()
     {
         m_GroupNameText.text = GetPersonGroupId();
+    }
+
+    IEnumerator CheckPersonIdExists(string name, string birthday)
+    {
+        string personListInGroup = "";
+        yield return RequestManager.GetPersonListInGroup(m_AzureManager.GetEndpoint(), m_AzureManager.GetApiKey(), m_ActivePersonGroup, value => personListInGroup = value);
+        if (personListInGroup != null)
+        {
+            PersonInGroup.Person[] personList = JsonHelper.getJsonArray<PersonInGroup.Person>(personListInGroup);
+            if (personList.Length > 0)
+            {
+                foreach(PersonInGroup.Person person in personList)
+                {
+                    if (person.name.Equals(name))
+                    {
+                        personId = person.personId;
+                        m_WebcamManager.SetPersonId(personId);
+                        Debug.Log("This person exists, personId is : " + personId);
+                    }
+                }
+            }
+        }
+        else
+        {
+            StartCoroutine(CreatePersonInPersonGroup(m_ActivePersonGroup, name, birthday));
+        }
+
     }
 
     string GetPersonGroupId()
@@ -113,16 +153,46 @@ public class RegistrationGuide : MonoBehaviour
         }
         else
         {
-            // Add faces to the Person object created
-
-            
-
+            m_WebcamManager.SetPersonId(personId);
         }
+    }
+
+    public void AddFacesToAzure()
+    {
+        StartCoroutine(AddFacesToPersonInPersonGroup(m_ActivePersonGroup, personId));
     }
 
     IEnumerator AddFacesToPersonInPersonGroup(string personGroupId, string personId)
     {
-        string[] imageFiles = Directory.GetFiles(m_ImageFolderPath, "*.jpg");
+        string personFolder = Application.dataPath + Constants.PREFIX_TRAIN_IMAGES_PATH + Constants.PREFIX_TRAIN_IMAGE_NAME + personId;
+        string[] imageFiles = Directory.GetFiles(personFolder, "*.jpg");
+
+        for (int i = 0; i < imageFiles.Length; i++)
+        {
+            string result = "";
+            yield return RequestManager.AddFaceToPersonInGroup(m_Endpoint, m_ApiKey, m_ActivePersonGroup, personId, imageFiles[i], "", value => result = value);
+            Debug.Log("Added face to Person in Group. Persisted Face ID : " + result);
+        }
+
+        // Train the PersonGroup
+        string trainPersonGroupResult = "Unknown";
+        yield return RequestManager.TrainPersonGroup(m_Endpoint, m_ApiKey, m_ActivePersonGroup, value => trainPersonGroupResult = value);
+
+        if (trainPersonGroupResult == "")
+        {
+            StartCoroutine(GoToDetectionScene());
+        }
+        else
+        {
+            Debug.Log("Something went wrong : " + trainPersonGroupResult);
+        }
+
+    }
+
+    IEnumerator GoToDetectionScene()
+    {
+        yield return m_SceneTransferDelay;
+        m_BaseManager.Finish();
     }
 
     public string GetPersonId()

@@ -374,7 +374,7 @@ MonoBehaviour:
   - {fileID: 1817341136912446, guid: 22cfee7372cd77845b8c535775264a62, type: 3}
   - {fileID: 4447159581495898061, guid: feb3608c124546843bbec03db0b16fba, type: 3}
   - {fileID: 6905111524451846819, guid: 91429aee1eb3281488dd2096b80a1f95, type: 3}
-  m_NextSceneName: 
+  m_NextSceneName: UserDetection
 --- !u!4 &311100114
 Transform:
   m_ObjectHideFlags: 0

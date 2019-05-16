@@ -76,14 +76,14 @@ public class WebcamManager : MonoBehaviour
                 {
                     snap.SetPixels(_CamTex.GetPixels());
                     snap.Apply();
-                    string personFolder = Application.dataPath + Constants.PREFIX_TRAIN_IMAGES_PATH + Constants.PREFIX_TRAIN_IMAGE_NAME + _RegisteredPeopleCounter.ToString();
+                    string personFolder = Application.dataPath + Constants.PREFIX_TRAIN_IMAGES_PATH + Constants.PREFIX_TRAIN_IMAGE_NAME + personId;
                     if (!Directory.Exists(personFolder))
                     {
                         Folders.Create(personFolder);
                     }
-                    File.WriteAllBytes(personFolder + "/" + _RegisteredPeopleCounter.ToString() + ".jpg", snap.EncodeToJPG());
+                    File.WriteAllBytes(personFolder + "/" + personId + "_" + _RegisteredPeopleCounter.ToString() + ".jpg", snap.EncodeToJPG());
                     Debug.Log("Capture button pressed during registration");
-
+                    _RegisteredPeopleCounter++;
                     OnPhotoCapture();
                 }
                 break;
