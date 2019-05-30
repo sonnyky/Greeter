@@ -30,10 +30,14 @@ public class RegistrationGuide : MonoBehaviour
 
     WaitForSeconds m_SceneTransferDelay = new WaitForSeconds(5);
 
+    System.Action retrievedHoroscope;
+
     // Start is called before the first frame update
     void Start()
     {
         WindowsVoice.speak("こんにちは。写真を登録してください。");
+
+        StartCoroutine(NetworkManager.GetRequest("http://api.jugemkey.jp/api/horoscope/free/2019/05/20", retrievedHoroscope));
 
         m_WebcamManager = GameObject.FindGameObjectWithTag("CameraManager").GetComponent<WebcamManager>();
         m_AzureManager = GameObject.FindGameObjectWithTag("AzureManager").GetComponent<AzureManager>();
