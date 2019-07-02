@@ -37,6 +37,8 @@ public class RegistrationGuide : MonoBehaviour
     {
         WindowsVoice.speak("こんにちは。写真を登録してください。");
 
+        retrievedHoroscope += OnRetrievedHoroscope;
+
         StartCoroutine(NetworkManager.GetRequest("http://api.jugemkey.jp/api/horoscope/free/2019/05/20", retrievedHoroscope));
 
         m_WebcamManager = GameObject.FindGameObjectWithTag("CameraManager").GetComponent<WebcamManager>();
@@ -72,6 +74,11 @@ public class RegistrationGuide : MonoBehaviour
           // TODO : add body
         });
 
+    }
+
+    void OnRetrievedHoroscope()
+    {
+        Debug.Log("Horoscope data retrieved!");
     }
 
     void InitializeDisplay()
@@ -125,6 +132,7 @@ public class RegistrationGuide : MonoBehaviour
     string GetCurrentPersonBirthday()
     {
         string birthday = GameObject.FindGameObjectWithTag("PersonBirthday").GetComponent<TMPro.TextMeshProUGUI>().text;
+        // Birthday must have delimiters such as 2000/03/16
         if (birthday.Length <= 1 || !DateTimeUtils.DateTimeFormatCheck(birthday))
         {
             birthday = "null";

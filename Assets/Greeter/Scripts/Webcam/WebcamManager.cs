@@ -34,7 +34,7 @@ public class WebcamManager : MonoBehaviour
         devices = WebCamTexture.devices;
 
         rawimage = GameObject.FindGameObjectWithTag("WebcamScreen").GetComponent<RawImage>();
-
+        Debug.Log("rawimage name : " + rawimage.gameObject.name);
         m_RuntimeImage = Application.dataPath + "/Images/Runtime/";
 
         m_CaptureButton = GameObject.Find("Capture").GetComponent<Button>();

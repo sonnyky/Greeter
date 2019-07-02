@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.IO;
+using UnityEngine.UI;
 
 public class AzureManager : MonoBehaviour
 {
@@ -35,6 +36,8 @@ public class AzureManager : MonoBehaviour
 
     TMPro.TextMeshProUGUI m_StatusText;
 
+    private Button m_ValidationButton;
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -51,6 +54,15 @@ public class AzureManager : MonoBehaviour
         m_WebcamManager = GameObject.FindGameObjectWithTag("CameraManager").GetComponent<WebcamManager>();
 
         persons = new List<PersonInGroup.Person>();
+
+        m_ValidationButton = GameObject.Find("Validate").GetComponent<Button>();
+        if (m_ValidationButton != null)
+        {
+            m_ValidationButton.onClick.AddListener(() =>
+            {
+                StartValidation();
+            });
+        }
     }
 
     void GetPersonGroupInput()
@@ -65,6 +77,7 @@ public class AzureManager : MonoBehaviour
 
     public void StartValidation()
     {
+        Debug.Log("Starting Validation");
         GetPersonGroupInput();
         StartCoroutine(Validation());
     }
@@ -163,6 +176,7 @@ public class AzureManager : MonoBehaviour
     IEnumerator GoToRegistration()
     {
         yield return m_SceneTransferDelay;
+        m_WebcamManager.StopCamera();
         m_BaseManager.Finish();
     }
 
