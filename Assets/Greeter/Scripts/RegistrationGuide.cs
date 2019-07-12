@@ -120,7 +120,7 @@ public class RegistrationGuide : MonoBehaviour
 
     string GetCurrentPersonName()
     {
-        string name = GameObject.FindGameObjectWithTag("PersonName").GetComponent<TMPro.TextMeshProUGUI>().text;
+        string name = GameObject.FindGameObjectWithTag("PersonName").GetComponent<TMPro.TMP_InputField>().text;
         if (name.Length <= 1)
         {
             name = "null";
