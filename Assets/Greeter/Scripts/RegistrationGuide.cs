@@ -179,6 +179,12 @@ public class RegistrationGuide : MonoBehaviour
         string personFolder = Application.dataPath + Constants.PREFIX_TRAIN_IMAGES_PATH + Constants.PREFIX_TRAIN_IMAGE_NAME + personId;
         string[] imageFiles = Directory.GetFiles(personFolder, "*.jpg");
 
+        if(imageFiles.Length == 0)
+        {
+            Debug.LogError("No images to be added to Person");
+            yield return null;
+        }
+
         for (int i = 0; i < imageFiles.Length; i++)
         {
             string result = "";
