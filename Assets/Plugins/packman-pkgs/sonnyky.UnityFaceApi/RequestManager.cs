@@ -179,6 +179,7 @@ public static class RequestManager
                 else
                 {
                     Debug.Log(":\nReceived: " + www.downloadHandler.text);
+                    // Todo : can get empty result but no error
                     result(www.downloadHandler.text);
                 }
             }

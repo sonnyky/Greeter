@@ -62,6 +62,7 @@ public class RegistrationGuide : MonoBehaviour
                 string birthday = GetCurrentPersonBirthday();
                 if (!name.Equals("null") && !birthday.Equals("null"))
                 {
+                    Debug.Log("Checking if person Id exists...");
                     StartCoroutine(CheckPersonIdExists(name, birthday));
                     m_CreatePersonButtonClicked = true;
                 }
@@ -71,7 +72,8 @@ public class RegistrationGuide : MonoBehaviour
         m_AddFacesButton = GameObject.FindGameObjectWithTag("AddFacesButton").GetComponent<Button>();
         m_AddFacesButton.onClick.AddListener(() => {
 
-          // TODO : add body
+            // TODO : add body
+            Debug.Log("Add faces body");
         });
 
     }
@@ -108,6 +110,7 @@ public class RegistrationGuide : MonoBehaviour
         }
         else
         {
+            Debug.Log("person does not exist. creating...");
             StartCoroutine(CreatePersonInPersonGroup(m_ActivePersonGroup, name, birthday));
         }
 
@@ -131,7 +134,9 @@ public class RegistrationGuide : MonoBehaviour
 
     string GetCurrentPersonBirthday()
     {
-        string birthday = GameObject.FindGameObjectWithTag("PersonBirthday").GetComponent<TMPro.TextMeshProUGUI>().text;
+        GameObject personBirthdayObject = GameObject.FindGameObjectWithTag("PersonBirthday");
+        string birthday = personBirthdayObject.GetComponent<TMPro.TMP_InputField>().text;
+
         // Birthday must have delimiters such as 2000/03/16
         if (birthday.Length <= 1 || !DateTimeUtils.DateTimeFormatCheck(birthday))
         {
