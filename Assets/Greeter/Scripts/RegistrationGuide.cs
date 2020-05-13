@@ -74,6 +74,7 @@ public class RegistrationGuide : MonoBehaviour
 
             // TODO : add body
             Debug.Log("Add faces body");
+            AddFacesToAzure();
         });
 
     }
@@ -194,6 +195,8 @@ public class RegistrationGuide : MonoBehaviour
         string personFolder = Application.dataPath + Constants.PREFIX_TRAIN_IMAGES_PATH + Constants.PREFIX_TRAIN_IMAGE_NAME + personId;
         string[] imageFiles = Directory.GetFiles(personFolder, "*.jpg");
 
+        int numOfRegisteredPhoto = 0;
+
         if(imageFiles.Length == 0)
         {
             Debug.LogError("No images to be added to Person");
@@ -205,9 +208,24 @@ public class RegistrationGuide : MonoBehaviour
             string result = "";
             yield return RequestManager.AddFaceToPersonInGroup(m_Endpoint, m_ApiKey, m_ActivePersonGroup, personId, imageFiles[i], "", value => result = value);
             Debug.Log("Added face to Person in Group. Persisted Face ID : " + result);
+            numOfRegisteredPhoto++;
+           
         }
 
+        if (numOfRegisteredPhoto == imageFiles.Length)
+        {
+            StartCoroutine("Train");
+        }
+        else
+        {
+            Debug.LogError("Face training failed");
+        }
+    }
+
+    IEnumerator Train()
+    {
         // Train the PersonGroup
+        
         string trainPersonGroupResult = "Unknown";
         yield return RequestManager.TrainPersonGroup(m_Endpoint, m_ApiKey, m_ActivePersonGroup, value => trainPersonGroupResult = value);
 
@@ -219,7 +237,7 @@ public class RegistrationGuide : MonoBehaviour
         {
             Debug.Log("Something went wrong : " + trainPersonGroupResult);
         }
-
+        
     }
 
     IEnumerator GoToDetectionScene()

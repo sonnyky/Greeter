@@ -70,8 +70,8 @@ public class AzureManager : MonoBehaviour
         m_PersonGroup = GameObject.FindGameObjectWithTag("PersonGroup").GetComponent<TMPro.TextMeshProUGUI>().text;
         if (m_PersonGroup.Length <= 1)
         {
-            m_PersonGroup = "placeholder";
-            Debug.Log("No PersonGroup specified. Setting to default (All small caps) : placeholder");
+            m_PersonGroup = "tinker";
+            Debug.Log("No PersonGroup specified. Setting to default (All small caps) : tinker");
         }
     }
 
@@ -121,25 +121,6 @@ public class AzureManager : MonoBehaviour
             yield break;
         }
 
-        #endregion
-
-        #region PersonGroup exists (is defined) and has at least one Person defined. So we check the Training Status
-        // ここまで来たらグループには一人以上が定義されている。あとはトレーニングされているかどうかのチェック。
-        if (m_PersonGroupTrained)
-        {
-            StartCoroutine(Recognize());
-        }
-        else
-        {
-            SetStatusText("PersonGroup には１人以上定義されているが、トレーニングされていない。");
-            string trainPersonGroupResult = "Unknown";
-            yield return RequestManager.TrainPersonGroup(m_Endpoint, m_ApiKey, m_PersonGroup, value => trainPersonGroupResult = value);
-            if (trainPersonGroupResult == "")
-            {
-                Debug.Log("Training success. Trying identification.");
-                StartCoroutine(Recognize());
-            }
-        }
         #endregion
 
         if (!m_PersonGroupExists || !m_PersonGroupNotEmpty || !m_PersonGroupTrained)
@@ -239,17 +220,34 @@ public class AzureManager : MonoBehaviour
         string trainingStatus = "Unknown";
         yield return RequestManager.GetPersonGroupTrainingStatus(m_Endpoint, m_ApiKey, m_PersonGroup, value => trainingStatus = value);
         Error.ErrorResponse res_error = JsonUtility.FromJson<Error.ErrorResponse>(trainingStatus);
-        Debug.Log(res_error.error.code);
-
-        if (res_error.error.code != null || res_error.error.code.Equals("PersonGroupNotTrained"))
+        Debug.Log("GetPersonGroupTrainedStatus error : " + res_error.error.code);
+        Debug.Log("Training status : " + trainingStatus);
+        if (res_error.error.code != null)
         {
-            // Do nothing if the PersonGroup is not trained.
+            Debug.LogError("Something went wrong at GetPersonGroupTrainedStatus ");
         }
         else
         {
             m_PersonGroupTrained = true;
+            #region PersonGroup exists (is defined) and has at least one Person defined. So we check the Training Status
+            // ここまで来たらグループには一人以上が定義されている。あとはトレーニングされているかどうかのチェック。
+            if (m_PersonGroupTrained)
+            {
+                StartCoroutine(Recognize());
+            }
+            else
+            {
+                SetStatusText("PersonGroup には１人以上定義されているが、トレーニングされていない。");
+                string trainPersonGroupResult = "Unknown";
+                yield return RequestManager.TrainPersonGroup(m_Endpoint, m_ApiKey, m_PersonGroup, value => trainPersonGroupResult = value);
+                if (trainPersonGroupResult == "")
+                {
+                    Debug.Log("Training success. Trying identification.");
+                    StartCoroutine(Recognize());
+                }
+            }
+            #endregion
         }
-
     }
 
     public int GetNumberOfPersonsInGroup()
