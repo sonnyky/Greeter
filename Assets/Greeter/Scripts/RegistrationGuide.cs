@@ -91,10 +91,14 @@ public class RegistrationGuide : MonoBehaviour
     IEnumerator CheckPersonIdExists(string name, string birthday)
     {
         string personListInGroup = "";
+        Debug.Log("CheckPersonIdExists : " + m_ActivePersonGroup);
         yield return RequestManager.GetPersonListInGroup(m_AzureManager.GetEndpoint(), m_AzureManager.GetApiKey(), m_ActivePersonGroup, value => personListInGroup = value);
+        Debug.Log("back to CheckPersonIdExists and personListInGroup : " + personListInGroup);
         if (personListInGroup != null)
         {
             PersonInGroup.Person[] personList = JsonHelper.getJsonArray<PersonInGroup.Person>(personListInGroup);
+
+            // If the personList is not empty, it means the person ID has been used before. TODO : restart registration flow to use a different person ID
             if (personList.Length > 0)
             {
                 foreach(PersonInGroup.Person person in personList)
@@ -107,10 +111,16 @@ public class RegistrationGuide : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                // the personList is empty which means the person ID has not been used before, so create a new person with this ID
+                Debug.Log("person list returned empty. creating...");
+                StartCoroutine(CreatePersonInPersonGroup(m_ActivePersonGroup, name, birthday));
+            }
         }
         else
         {
-            Debug.Log("person does not exist. creating...");
+            Debug.Log("person list returned null. creating...");
             StartCoroutine(CreatePersonInPersonGroup(m_ActivePersonGroup, name, birthday));
         }
 

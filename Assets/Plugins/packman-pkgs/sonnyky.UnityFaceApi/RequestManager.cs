@@ -159,7 +159,7 @@ public static class RequestManager
     {
         string parameters = "?subscription-key=" + apiKey;
         string request = endpoint + "/persongroups/" + personGroupId + "/persons" + parameters;
-
+        Debug.Log("GetPersonListInGroup full request : " + request);
         using (UnityWebRequest www = UnityWebRequest.Get(request))
         {
             yield return www.SendWebRequest();
