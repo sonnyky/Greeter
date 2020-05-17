@@ -287,7 +287,7 @@ GameObject:
   - component: {fileID: 466861996}
   m_Layer: 5
   m_Name: InputPersonGroup
-  m_TagString: Untagged
+  m_TagString: PersonGroup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1411,7 +1411,7 @@ GameObject:
   - component: {fileID: 2019865725}
   m_Layer: 5
   m_Name: Text
-  m_TagString: PersonGroup
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
