@@ -5,7 +5,7 @@ using TMPro;
 using System.IO;
 using UnityEngine.UI;
 
-public class AzureManager : MonoBehaviour
+public class AzureManager : Singleton
 {
     private string m_ApiKey = "None";
 

@@ -242,6 +242,7 @@ public class RegistrationGuide : MonoBehaviour
 
     IEnumerator GoToDetectionScene()
     {
+        m_WebcamManager.StopCamera();
         yield return m_SceneTransferDelay;
         m_BaseManager.Finish();
     }
