@@ -5,7 +5,7 @@ using TMPro;
 using System.IO;
 using UnityEngine.UI;
 
-public class AzureManager : MonoBehaviour
+public class AzureManager : Singleton
 {
     private string m_ApiKey = "None";
 
@@ -67,7 +67,7 @@ public class AzureManager : MonoBehaviour
 
     void GetPersonGroupInput()
     {
-        m_PersonGroup = GameObject.FindGameObjectWithTag("PersonGroup").GetComponent<TMPro.TextMeshProUGUI>().text;
+        m_PersonGroup = GameObject.FindGameObjectWithTag("PersonGroup").GetComponent<TMPro.TMP_InputField>().text;
         if (m_PersonGroup.Length <= 1)
         {
             m_PersonGroup = "tinker";
@@ -135,7 +135,7 @@ public class AzureManager : MonoBehaviour
     {
         yield return m_DelayUntilAutoCreatePersonGroup;
         bool createPersonGroupSucceded = false;
-        yield return RequestManager.CreatePersonGroup(m_Endpoint, m_ApiKey, m_PersonGroup, m_PersonGroup, "Auto created", 
+        yield return RequestManager.CreatePersonGroup(m_Endpoint, m_ApiKey, personGroup, personGroup, "Auto created", 
             value => createPersonGroupSucceded = value);
 
         if (!createPersonGroupSucceded)
