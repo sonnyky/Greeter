@@ -27,6 +27,7 @@ public class Avatar : MonoBehaviour {
         m_MecanimController = gameObject.GetComponent<QuerySDMecanimController>();
 
         m_CameraPosition = Camera.main.transform.position;
+        m_CameraPosition.y = 20.5f;
         m_Target = m_CameraPosition;
 
         SetState(m_MoveState);
@@ -61,7 +62,7 @@ public class Avatar : MonoBehaviour {
 
     public void ReachedTarget()
     {
-        if((transform.position - m_Target).sqrMagnitude < 4f)
+        if((transform.position - m_Target).sqrMagnitude < 25f)
         {
             SetState(m_IdleState);
         }

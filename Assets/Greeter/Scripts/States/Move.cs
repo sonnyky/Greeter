@@ -14,14 +14,13 @@ public class Move : StateManager<Avatar> {
     public override void Tick()
     {
         targetObject.FaceTargetPosition();
-        targetObject.MoveForward(0.01f);
-        targetObject.ReachedTarget();
+
     }
 
     public override void OnStateEnter()
     {
         base.OnStateEnter();
-        targetObject.SetAnimation(QuerySDMecanimController.QueryChanSDAnimationType.NORMAL_WALK);
+        targetObject.SetAnimation(QuerySDMecanimController.QueryChanSDAnimationType.NORMAL_IDLE);
     }
 
     public override void OnStateExit()

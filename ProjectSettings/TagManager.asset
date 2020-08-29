@@ -5,6 +5,18 @@ TagManager:
   serializedVersion: 2
   tags:
   - ConversationCanvas
+  - WebcamScreen
+  - DetectionButton
+  - Status
+  - PersonGroup
+  - RegistrationButton
+  - CameraManager
+  - GroupNameText
+  - AzureManager
+  - PersonName
+  - PersonBirthday
+  - CreatePersonButton
+  - AddFacesButton
   layers:
   - Default
   - TransparentFX
